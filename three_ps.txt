@@ -1,3 +1,5 @@
-Progress: I built out a random forest model and started work on a larger model selection function.
+1/30/2024
+Progress: I built out a random forest model and started work on a larger model selection function. I also completed my penalized linear regresion, naive bayes, and KNN testing. Linear regression unsurprisingly performed the best. I made some progress writing as well.
 Problems: I am struggling a bit with broad direction, I don't really know where to go with my final product.
-Plans: By next week I plan to have the entirity of my rrf_rr_desc classification done.
+Plans: By next week I plan to have the entirity of my rrf_rr_desc classification done. I would also like to finish the markdown cells.
+Hours: In the last week I spent about 4 hours working on the capstone.
