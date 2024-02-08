@@ -1,1 +1,1 @@
-This repo will contain my capstone and all function files. I will improve this read me before making it public.
+This repository is very much currently a work in progress, and will be beautified in the future once the work is closer to completion.
