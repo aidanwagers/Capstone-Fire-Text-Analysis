@@ -1,3 +1,9 @@
+2/12/24
+Progress: I am almost done with classification work and have my model up to 60% accuracy without being overfitted. This is pretty good, but not great. I also corrected a lemmatization error I found, but this had no effect on model accuracy.
+Problems: I am still struggling with direction, I am hoping my presentation wednesday and meeting with John on Thursday will help with this. I am having a hard time improving my model further as well.
+Plans: Be done with my model by next week, start ideating and prototyping my final product.
+Hours: I spent between 12 and 15 hours on the capstone this week.
+
 2/5/2024
 Progress: I continued working on my classification issues and built out a few functions. 
 Problems: I am still struggling with direction. All of the classification issues are kind of going nowhere.
