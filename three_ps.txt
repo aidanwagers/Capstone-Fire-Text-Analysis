@@ -1,3 +1,9 @@
+2/19/24
+Progress: This week has been a slow one, as I have taken some time to work on other things. I had a meeting with John that was quite helpful, and identified the tools I will use to make a dashboard as well as some new questions to potentially add more "why" as discussed in my in class presentation.
+Problems: My biggest problem right now is just time, but that should get better starting this week. I have a much better sense of direction after my presentationa and meetings with John.
+Plans: I am going to work this week on my two new questions, and exploring the tools I'll use for dashboarding in python.
+Hours: I spent roughly 6 hours this week working on my capston. Next week I expect to get 20 or more.
+
 2/12/24
 Progress: I am almost done with classification work and have my model up to 60% accuracy without being overfitted. This is pretty good, but not great. I also corrected a lemmatization error I found, but this had no effect on model accuracy.
 Problems: I am still struggling with direction, I am hoping my presentation wednesday and meeting with John on Thursday will help with this. I am having a hard time improving my model further as well.
