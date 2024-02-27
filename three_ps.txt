@@ -1,3 +1,10 @@
+2/26/24
+Progress: I made significant progress in establishing my code to explore agency involvement and predict text that way. The results are stored and ready for exploration. I looked into dashboarding tools and am considering a small application using streamlit to create my visual product. I spent a good amount of time on that. I also worked on writeups within the notebook to work towards code completion. I hope to be fully done with my analysis code within the next week and a half.
+Problems: Smooth sailing this week other than avery time consuming issue with my function to analyze agency involvement that has since been resolved.
+Plans: Finish all analysis focused code as soon as possible. This is a grind week, and I hope to get nearly 30 hours in. Finish as many writeups as I can, and begin building with Streamlit.
+Hours: Between research, writing, and coding, I spent roughly 22 hours this week on the capstone. Next week I hope to have even more.
+
+
 2/19/24
 Progress: This week has been a slow one, as I have taken some time to work on other things. I had a meeting with John that was quite helpful, and identified the tools I will use to make a dashboard as well as some new questions to potentially add more "why" as discussed in my in class presentation.
 Problems: My biggest problem right now is just time, but that should get better starting this week. I have a much better sense of direction after my presentationa and meetings with John.
