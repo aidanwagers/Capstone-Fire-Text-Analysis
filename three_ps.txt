@@ -1,3 +1,10 @@
+3/5/24
+Progress: I think I am about done with analysis! I got great results for acreage and agency inolvement that I am going to clear with Andrew and then begin work on my visualization. I had to do a lot of trial and error to get the code working, so it took a while.
+Problems: I need to refresh on making function files to clean up my notebook. Other than that it was a pretty smooth week.
+Plans: Decide between Tableau, Power BI, or Streamlit to make my visual product. Clean up notebook and send it to fire people.
+Hours: I spent about 20 hours on my capstone this last week.
+
+
 2/26/24
 Progress: I made significant progress in establishing my code to explore agency involvement and predict text that way. The results are stored and ready for exploration. I looked into dashboarding tools and am considering a small application using streamlit to create my visual product. I spent a good amount of time on that. I also worked on writeups within the notebook to work towards code completion. I hope to be fully done with my analysis code within the next week and a half.
 Problems: Smooth sailing this week other than avery time consuming issue with my function to analyze agency involvement that has since been resolved.
