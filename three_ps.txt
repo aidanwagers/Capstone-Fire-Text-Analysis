@@ -1,3 +1,9 @@
+3/12/24
+Progress: Lots of clean up work completed, getting functions into function files, etc.
+Problems: Lots of werid issues with importing from function files, but all is good now!
+Plans: Get notebook to fire people and decide on visualization method concretely. Write ups in notebook need to be finished as well.
+Hours: I spent about 13 hours on my capstone this last week.
+
 3/5/24
 Progress: I think I am about done with analysis! I got great results for acreage and agency inolvement that I am going to clear with Andrew and then begin work on my visualization. I had to do a lot of trial and error to get the code working, so it took a while.
 Problems: I need to refresh on making function files to clean up my notebook. Other than that it was a pretty smooth week.
