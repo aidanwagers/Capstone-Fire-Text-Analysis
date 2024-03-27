@@ -1,3 +1,11 @@
+3/27/24
+Progress: Wrote first draft of paper, most of the way through visual product.
+Problems: Visual Product is going to require some code to get to a point I am satisfied with it.
+Plans: Finish first draft of visual product, revise paper.
+Hours: I spent about 22 hours on my capstone this last week.
+
+*SPRING BREAK*
+
 3/12/24
 Progress: Lots of clean up work completed, getting functions into function files, etc.
 Problems: Lots of werid issues with importing from function files, but all is good now!
