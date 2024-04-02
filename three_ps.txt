@@ -1,3 +1,9 @@
+4/2/24
+Progress: I finished my first draft of my visual product! I also worked on some oversampling to confirm model results.
+Problems: Retrofitting my code to work easily with power BI is time consuming.
+Revise paper this week and finish virtual product.
+Hours: Around 15 hours this week.
+
 3/27/24
 Progress: Wrote first draft of paper, most of the way through visual product.
 Problems: Visual Product is going to require some code to get to a point I am satisfied with it.
