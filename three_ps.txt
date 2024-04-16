@@ -1,3 +1,9 @@
+4/16/24
+Progress: My paper is close to done, peer reviews are finished, and code is at a point where I only need to clean up formattting. I am a bit behind schedule on my visual product, but am excited to catch up and get it finished.
+Problems: Fixing my paper after first reviews took longer than anticipated
+Plans: Finish virtual product this week, prepare presentation slides, and get further feedback from Andrew on paper once pper reviews come in.
+Hours: Around 15 hours this week.
+
 4/2/24
 Progress: I finished my first draft of my visual product! I also worked on some oversampling to confirm model results.
 Problems: Retrofitting my code to work easily with power BI is time consuming.
