@@ -1,3 +1,9 @@
+4/23/24
+Progress: Near-final drafts of my paper and visual product have been submitted for review. I am happy with the progress made this week. I present tomorrow and have finished my slides.
+Problems: Some minor issues with tables in Power BI forming relationships seemingly with a mind of their own, but all resolved now.
+Plans: I plan to conclude my code commenting and cleaning, and have my github repo ready for review by the end of this week.
+Hours: Around 16 this week.
+
 4/16/24
 Progress: My paper is close to done, peer reviews are finished, and code is at a point where I only need to clean up formattting. I am a bit behind schedule on my visual product, but am excited to catch up and get it finished.
 Problems: Fixing my paper after first reviews took longer than anticipated
