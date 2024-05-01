@@ -5,6 +5,8 @@ This repository contains the code for my MSBA capstone project for Spring 2024. 
 
 ## The Work
 
+### Cleaning and Prep
+
 ## Conclusion
 
 
