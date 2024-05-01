@@ -46,7 +46,8 @@ In this final section of the notebook I used acreage binned to quartiles to exam
 
 
 ## What are these files?
-
+## Product Notebook:
+This is the jupyter notebook containing the final code for my capstone project.
 
 ## Conclusion
 
