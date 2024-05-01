@@ -38,9 +38,10 @@ On recommendation from a faculty mentor, I attempted to model using SVO pairings
 This is the final iteration of the previously established risk classification models, with interpreted insights regarding the text features that drive prediction of risk.
 
 ### Agency Involvement
+This section of the notebook deals with attempting to classify whether or not a fire management agency is involved in the fire. the results were surprisingly promising. Insights and model accuracies are all available within the notebook.
 
-
-
+### Acreage
+In this final section of the notebook I used acreage binned to quartiles to examine the text features that are predictive of different sized fires. I also perform a cosine analysis to determine text similarity between dires of different sizes.
 
 
 
