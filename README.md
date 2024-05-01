@@ -14,7 +14,7 @@ Next, I moved on to processing the text. This was by far the most difficult part
 Once the data was cleaned, I generated basic descriptive statistics about the dataset. This primarily consisted of stats related to the text such as most common tokens and n-grams, notes field completion, unique tokens by text field, etc.
 
 ### Classifying Risk - Binary Classification
-To begin exploring the possibilities of using classification modeling to derive insights, I built functions to classify, from vectorized text, a binary risk variable (high/other,mod/other, etc.). This was succesful and I explore the results within the notebook.
+To begin exploring the possibilities of using classification modeling to derive insights, I built functions to classify, from vectorized text, a binary risk variable (high/other,mod/other, etc.). I utilized a penalized logistic regression model to classify the risk. This was succesful and I explore the results within the notebook.
 
 ### Regional Differences
 Next I examined the differences in token usage and risk assignment across regions. These results were then output to csv for use in the Power BI visualization.
@@ -23,6 +23,24 @@ Next I examined the differences in token usage and risk assignment across region
 This section of the notebook allows for the user to input their own tokens that they would like to recieve insights about in the text. By simply changing the tokens in the target_words list, a user can modify this however they see fit.
 
 ### Sentiment Analyses
+Utilizing the TextBlob sentiment analysis tools, I performed a variety of analyses to look for meaningful insights in how sentiment differs across fire attributes. This was largely unsuccesful, as the data is written in a very consistent, flat manner. Both polarity and subjectivity were examined. Results are visible in the notebook.
+
+### Risk Classification - Binary & 3 Class
+In this section of the notebook the model selection process for my risk classification is available. I try naive bayes, random forest, penalized logistic regression, stacker models, and more to determine the best models for classifying risk both as a binary and three class variable. Once the best models are determined I examine feature coefficients and interpret results.
+
+### Risk Classification - N-Grams
+In this section, I tested how using n-grams as training data compared to individual tokens. The results were fairly unimpressive.
+
+### SVOs
+On recommendation from a faculty mentor, I attempted to model using SVO pairings. The results for classification were not too exciting, but examining the disproportionate SVOs by risk was quite interesting.
+
+### Final Model
+This is the final iteration of the previously established risk classification models, with interpreted insights regarding the text features that drive prediction of risk.
+
+### Agency Involvement
+
+
+
 
 
 
