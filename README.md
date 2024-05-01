@@ -49,6 +49,9 @@ In this final section of the notebook I used acreage binned to quartiles to exam
 ## Product Notebook:
 This is the jupyter notebook containing the final code for my capstone project.
 
+## three_ps:
+This is a weekly update file to track my progress throughout the project lifecycle.
+
 ## Conclusion
 
 
