@@ -52,6 +52,8 @@ This is the jupyter notebook containing the final code for my capstone project.
 ## three_ps:
 This is a weekly update file to track my progress throughout the project lifecycle.
 
-## Conclusion
+## README.md:
+The file you are reading now!
+
 
 
