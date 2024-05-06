@@ -95,7 +95,7 @@ Contains all functions related to classification of text. These include:
 * try_variety_of_models
 
 ### text_functions.py:
-This file contains functions used in processing the text to prepare it for anlysis. They are as follows:
+This file contains functions used in processing the text to prepare it for analysis. They are as follows:
 * categorize_columns
 * firestops
 * get_last_value
