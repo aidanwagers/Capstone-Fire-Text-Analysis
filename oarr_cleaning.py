@@ -116,21 +116,24 @@ def oarr_clean_and_check(df):
     
     # Some date checking
     df['start_date_time'] = (df['start_date_time']
-                             .apply(lambda x: datetime.strptime(x,"%Y-%m-%d:%H%M"))
+                             .apply(lambda x: datetime.strptime(x,"%Y-%m-%d:%H%M")))
                                                                                     
     
-    for col, valid_range in [('start_date_time', None), ('start_year', range(2011, 2023)),
-                             ('start_month', range(1, 13)), ('start_month_day_year', None)]:
-        for idx, value in enumerate(df[col], start=1):
+    for col, valid_range in [
+        ('start_date_time', None), 
+        ('start_year', range(2011, 2023)),
+        ('start_month', range(1, 13)), 
+        ('start_month_day_year', None)
+    ]:
+                             
+        for idx, value in df[col].items():  # Use items() to iterate over (index, value) pairs
             if pd.isnull(value):
                 if col == 'start_month_day_year':
                     print(f"Null value found in '{col}' at index {idx}")
                 else:
-                    print(f"Null values found in '{col}', investigate")
+                    print(f"Null value found in '{col}' at index {idx}")
             elif valid_range is not None and value not in valid_range:
                 print(f"Invalid value '{value}' found in '{col}' at index {idx}")
-    
-
 
 # In[ ]:
 

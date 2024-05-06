@@ -622,7 +622,7 @@ def store_predict_fire_size_and_find_terms(df, size_categories):
     
     # Print the most influential terms for the second category in size_categories
     print(f"\nMost influential terms for '{size_categories[0]}' fires:")
-    print(pd.DataFrame(negative_features, columns=['Coefficient', '
-                                                   Feature']).head(15))
+    print(pd.DataFrame(negative_features, columns=['Coefficient', 
+                                                   'Feature']).head(15))
 
 

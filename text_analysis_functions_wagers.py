@@ -198,11 +198,11 @@ def percentage_with_target_words(data, target_words):
 
     for word in target_words:
         data_copy[f'contains_{word}'] = (data_copy['combined_text']
-                                         .apply(contains_target_word, target_word=word) 
+                                         .apply(contains_target_word, target_word=word))
                                                 
-        percentage_with_target_words[word] = (data_copy[f'contains_{word}'].sum() 
-                                              / len(data_copy)) * 100
-                                              data_copy.drop(columns=[f'contains_{word}'], inplace=True)
+    percentage_with_target_words[word] = (data_copy[f'contains_{word}'].sum() 
+                                          / len(data_copy)) * 100
+    data_copy.drop(columns=[f'contains_{word}'], inplace=True)
 
     sorted_results = sorted(percentage_with_target_words.items(), key=lambda x: x[1], reverse=True)
 
@@ -233,10 +233,10 @@ def percentage_by_risk(data, target_words):
         for word in target_words:
             group[f'contains_{word}'] = group['combined_text'].apply(contains_target_word, 
                                                                      target_word=word)
-            percentage_with_target_words[word] = (group[f'contains_{word}'].sum() 
-                                                  / len(group)) * 100
-                                                  group.drop(columns=[f'contains_{word}'], inplace=True)
-        results_by_risk[risk] = percentage_with_target_words
+    percentage_with_target_words[word] = (group[f'contains_{word}'].sum() 
+                                          / len(group)) * 100
+    group.drop(columns=[f'contains_{word}'], inplace=True)
+    results_by_risk[risk] = percentage_with_target_words
 
     for risk in custom_order:
         if risk in results_by_risk:
