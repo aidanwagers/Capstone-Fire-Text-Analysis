@@ -4,85 +4,80 @@
 # In[1]:
 
 
-import nltk
-from datetime import timedelta
-import os
-from nltk.corpus import stopwords
-import numpy as np
-import sqlite3
-from collections import Counter, defaultdict
-from string import punctuation
-import re
-import pandas as pd
-import matplotlib.pyplot as plt
-from pprint import pprint
-sw = stopwords.words('english')
-import janitor
-import spacy
-from textblob import TextBlob
-tb = TextBlob('')
-from spacytextblob.spacytextblob import SpacyTextBlob
-nlp = spacy.load('en_core_web_lg')
-import seaborn as sns
-import scipy.stats as stats
-from scipy.stats import kruskal
-from gensim.models import CoherenceModel
-from gensim import corpora
-from gensim.models.ldamodel import LdaModel
-import ipywidgets as widgets
-from ipywidgets import Layout
-from ipywidgets import interact_manual, interactive_output
-from IPython.display import display, clear_output
-import pyLDAvis.gensim_models as gensimvis
-import pyLDAvis
-import spacy
+import csv
 import math
-from textblob import TextBlob
-tb = TextBlob('')
-from spacytextblob.spacytextblob import SpacyTextBlob
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import BaggingClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.preprocessing import LabelEncoder
-from random import randint
-from sklearn.model_selection import RandomizedSearchCV
+import os
+import random
+import re
+import warnings
+from collections import Counter, defaultdict
+from datetime import timedelta
+from string import punctuation
+
+import eli5
+import ipywidgets as widgets
+import janitor
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import nltk
+import numpy as np
+import pandas as pd
+import pyLDAvis
+import pyLDAvis.gensim_models as gensimvis
+import scipy.stats as stats
+import seaborn as sns
+import spacy
+import sqlite3
 import winsound
-from sklearn.model_selection import cross_val_score
-from sklearn.metrics import classification_report, confusion_matrix
+import xgboost as xgb
+from gensim import corpora
+from gensim.models import CoherenceModel, LdaModel
+from IPython.display import display, clear_output
+from nltk.corpus import stopwords, words
+from nltk.probability import FreqDist
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import (GridSearchCV, RandomizedSearchCV, cross_val_score, train_test_split)
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
 from spellchecker import SpellChecker
 from textblob import TextBlob
-import eli5
+from wordcloud import WordCloud
 from eli5.sklearn import PermutationImportance
-import warnings
+
+# Configure warnings
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    nltk.download('punkt')
-    nltk.download('words')
-from sklearn.model_selection import GridSearchCV
-from nltk.tokenize import word_tokenize
-from nltk.probability import FreqDist
-from nltk.corpus import words
-from nltk.util import ngrams
-import random
-from wordcloud import WordCloud
-import xgboost as xgb
-import matplotlib.dates as mdates
-import csv
+    
+# Download necessary nltk data
+nltk.download('punkt')
+nltk.download('words')
 
+# NLP setup
+nlp = spacy.load('en_core_web_lg')
+tb = TextBlob('')
+nlp.add_pipe('spacytextblob')
+
+# Stopwords for English
+sw = stopwords.words('english')
 
 # In[2]:
 # Initialize vectorzer
 vectorizer =TfidfVectorizer()
 
-def train_logistic_reg_for_one_risk(text, labels, risk = 'high', penalty='l2', C=1, max_iter=500):
+def train_logistic_reg_for_one_risk(text, 
+                                    labels, 
+                                    risk = 'high', 
+                                    penalty='l2', 
+                                    C=1, 
+                                    max_iter=500):
     """
     Train a logistic regression model for classifying text data with binary risk variable.
 
@@ -109,9 +104,15 @@ def train_logistic_reg_for_one_risk(text, labels, risk = 'high', penalty='l2', C
     x = vectorizer.fit_transform(text)
     y = labels_binary.tolist()
     
-    lrx_train, lrx_test, lry_train, lry_test = train_test_split(x, y, test_size=0.2, random_state=2)
+    lrx_train, lrx_test, lry_train, lry_test = train_test_split(x, 
+                                                                y, 
+                                                                test_size=0.2,
+                                                                random_state=2)
     
-    model = LogisticRegression(penalty=penalty, C=C, random_state=2, max_iter=max_iter)
+    model = LogisticRegression(penalty=penalty, 
+                               C = C, 
+                               random_state = 2, 
+                               max_iter = max_iter)
     model.fit(lrx_train, lry_train)
     
     return model, lrx_train, lrx_test, lry_train, lry_test
@@ -134,7 +135,8 @@ def risk_other_machine(df, target_risk):
            - Preprocessed labels (Series): Risk labels after preprocessing.
     """
     copy = df.copy()    
-    copy['rrf_rr_desc'] = copy['rrf_rr_desc'].apply(lambda x: 'other' if x != target_risk else x)
+    copy['rrf_rr_desc'] = copy['rrf_rr_desc'].apply(lambda x: 'other' 
+                                                    if x != target_risk else x)
     copy_comb = copy['combined_text']
     copy_labels = copy['rrf_rr_desc']
     
@@ -144,7 +146,11 @@ def risk_other_machine(df, target_risk):
 # In[4]:
 
 
-def train_nb_classifier(combined_texts=None, risk_labels=None, test_size=0.2, alpha = 1.0, random_state=2):
+def train_nb_classifier(combined_texts=None, 
+                        risk_labels=None, 
+                        test_size=0.2, 
+                        alpha = 1.0, 
+                        random_state=2):
     """
     Train a Naive Bayes classifier for classifying text data into risk categories.
 
@@ -169,7 +175,10 @@ def train_nb_classifier(combined_texts=None, risk_labels=None, test_size=0.2, al
     x_nb = vectorizer.fit_transform(combined_texts)
     y_nb = risk_labels
 
-    x_nb_train, x_nb_test, y_nb_train, y_nb_test = train_test_split(x_nb, y_nb, test_size=test_size, random_state=random_state)
+    x_nb_train, x_nb_test, y_nb_train, y_nb_test = train_test_split(x_nb, 
+                                                                    y_nb, 
+                                                                    test_size = test_size, 
+                                                                    random_state = random_state)
 
     nb_classifier = MultinomialNB(alpha= alpha)
     nb_classifier.fit(x_nb_train, y_nb_train)
@@ -180,7 +189,11 @@ def train_nb_classifier(combined_texts=None, risk_labels=None, test_size=0.2, al
 # In[5]:
 
 
-def train_knn_classifier(combined_texts=None, risk_labels=None, neighbors = 6, test_size=0.2, random_state=2):
+def train_knn_classifier(combined_texts=None, 
+                         risk_labels=None, 
+                         neighbors = 6, 
+                         test_size=0.2, 
+                         random_state=2):
     """
     Train a k-Nearest Neighbors (kNN) classifier for classifying text data into risk categories.
 
@@ -201,7 +214,10 @@ def train_knn_classifier(combined_texts=None, risk_labels=None, neighbors = 6, t
     """
     x = vectorizer.fit_transform(combined_texts)
     y = risk_labels.tolist()
-    xnn_train, xnn_test, ynn_train, ynn_test = train_test_split(x,y,test_size = 0.2, random_state = 2)
+    xnn_train, xnn_test, ynn_train, ynn_test = train_test_split(x,
+                                                                y,
+                                                                test_size = 0.2, 
+                                                                random_state = 2)
     knn_fire = KNeighborsClassifier(n_neighbors = neighbors)
     knn_fire.fit(xnn_train, ynn_train)
     
@@ -268,9 +284,15 @@ def train_logistic_reg(text, labels, penalty = 'l2', C = 1, max_iter = 500):
     x = vectorizer.fit_transform(text)
     y = labels.tolist()
     
-    lrx_train, lrx_test, lry_train, lry_test = train_test_split(x, y, test_size = 0.2, random_state = 2)
+    lrx_train, lrx_test, lry_train, lry_test = train_test_split(x, 
+                                                                y, 
+                                                                test_size = 0.2, 
+                                                                random_state = 2)
     
-    model = LogisticRegression(penalty = penalty, C = C, random_state = 2, max_iter = max_iter)
+    model = LogisticRegression(penalty = penalty, 
+                               C = C, 
+                               random_state = 2, 
+                               max_iter = max_iter)
     model.fit(lrx_train,lry_train)
     
     return(model, lrx_train, lrx_test, lry_train, lry_test)
@@ -302,8 +324,12 @@ def train_random_forest(text,labels,n_estimators = 500):
     x = vectorizer.fit_transform(text)
     y = labels.tolist()
     
-    rfx_train, rfx_test, rfy_train, rfy_test = train_test_split(x, y, test_size = 0.2, random_state = 2)
-    rf_classifier = RandomForestClassifier(n_estimators= n_estimators, random_state = 2)
+    rfx_train, rfx_test, rfy_train, rfy_test = train_test_split(x, 
+                                                                y, 
+                                                                test_size = 0.2, 
+                                                                random_state = 2)
+    rf_classifier = RandomForestClassifier(n_estimators= n_estimators, 
+                                           random_state = 2)
     rf_classifier.fit(rfx_train, rfy_train)
     
     return(rf_classifier,rfx_train, rfx_test, rfy_train, rfy_test)
@@ -324,8 +350,12 @@ def best_random_forest(text, labels, n_estimators=500):
     x = vectorizer.fit_transform(text)
     y = labels.tolist()
     
-    rfx_train, rfx_test, rfy_train, rfy_test = train_test_split(x, y, test_size=0.2, random_state=2)
-    rf_classifier = RandomForestClassifier(n_estimators=n_estimators, random_state=2)
+    rfx_train, rfx_test, rfy_train, rfy_test = train_test_split(x, 
+                                                                y, 
+                                                                test_size=0.2, 
+                                                                random_state=2)
+    rf_classifier = RandomForestClassifier(n_estimators=n_estimators, 
+                                           random_state=2)
 
 
     param_grid = {
@@ -338,7 +368,11 @@ def best_random_forest(text, labels, n_estimators=500):
     }
 
     # Instantiate GridSearchCV
-    grid_search = GridSearchCV(rf_classifier, param_grid, cv=5, scoring='accuracy', n_jobs=-1)
+    grid_search = GridSearchCV(rf_classifier, 
+                               param_grid, 
+                               cv=5, 
+                               scoring='accuracy', 
+                               n_jobs=-1)
     grid_search.fit(rfx_train, rfy_train)
 
     # Get the best model from grid search
@@ -441,7 +475,10 @@ def predict_fire_size_and_find_terms(df, size_categories):
     X = vectorizer.fit_transform(texts)
     
     # Split data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=2)
+    X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                        labels, 
+                                                        test_size=0.2, 
+                                                        random_state=2)
     
     # Initialize and fit classifier
     classifier = LogisticRegression(random_state=2)
@@ -451,14 +488,17 @@ def predict_fire_size_and_find_terms(df, size_categories):
     y_pred = classifier.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     print(f"Accuracy: {accuracy}")
-    print(classification_report(y_test, y_pred, target_names=size_categories))
+    print(classification_report(y_test, 
+                                y_pred, 
+                                target_names = size_categories))
     
     # Get feature names and coefficients from the model
     feature_names = vectorizer.get_feature_names_out()
     coefficients = classifier.coef_[0]
     
     # Match coefficients with feature names and sort
-    feature_importance = sorted(zip(coefficients, feature_names), reverse=True)
+    feature_importance = sorted(zip(coefficients, feature_names), 
+                                reverse=True)
     
     # Print the most influential terms for the first category in size_categories
     print(f"Most influential terms for '{size_categories[1]}' fires:")
@@ -470,7 +510,10 @@ def predict_fire_size_and_find_terms(df, size_categories):
     for coef, feature in reversed(feature_importance[-15:]):
         print(f"{feature}: {coef}")
 
-def store_coefficients(vectorizer, plr_model, num_features=15, filename='coefficients_across_classes.csv'):
+def store_coefficients(vectorizer, 
+                       plr_model, 
+                       num_features=15, 
+                       filename='coefficients_across_classes.csv'):
     feature_names = vectorizer.get_feature_names_out()
     coefficients = plr_model.coef_
 
@@ -489,14 +532,16 @@ def store_coefficients(vectorizer, plr_model, num_features=15, filename='coeffic
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
         # Header row with class names for coefficients
-        header = ['Feature'] + [f'Coefficient_{class_name}' for class_name in plr_model.classes_]
+        header = ['Feature'] + [f'Coefficient_{class_name}' 
+                                for class_name in plr_model.classes_]
         writer.writerow(header)
 
         # Write the coefficients for each top and bottom feature across all classes
         for idx in top_bottom_feature_indices:
             feature = feature_names[idx]
             # Retrieve the coefficient of this feature across all classes
-            coeffs_across_classes = [coefficients[class_index][idx] for class_index in range(len(plr_model.classes_))]
+            coeffs_across_classes = [coefficients[class_index][idx] for class_index 
+                                     in range(len(plr_model.classes_))]
             row = [feature] + [f'{coeff:.4f}' for coeff in coeffs_across_classes]
             writer.writerow(row)
 # In[ ]:
@@ -515,7 +560,8 @@ def store_predict_fire_size_and_find_terms(df, size_categories):
     filtered_data = df[df['size_cat'].isin(size_categories)].copy()
     
     # Create a binary target variable
-    filtered_data['target'] = (filtered_data['size_cat'] == size_categories[1]).astype(int)
+    filtered_data['target'] = (filtered_data['size_cat'] 
+                               == size_categories[1]).astype(int)
     
     # Extract texts and labels
     texts = filtered_data['combined_text'].tolist()
@@ -526,7 +572,10 @@ def store_predict_fire_size_and_find_terms(df, size_categories):
     X = vectorizer.fit_transform(texts)
     
     # Split data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=2)
+    X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                        labels, 
+                                                        test_size=0.2, 
+                                                        random_state=2)
     
     # Initialize and fit classifier
     classifier = LogisticRegression(random_state=2)
@@ -535,9 +584,14 @@ def store_predict_fire_size_and_find_terms(df, size_categories):
     # Predictions and evaluation
     y_pred = classifier.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
-    classification_rep = classification_report(y_test, y_pred, target_names=size_categories, output_dict=True)
+    classification_rep = classification_report(y_test,
+                                               y_pred, 
+                                               target_names = size_categories, 
+                                               output_dict=True)
     print(f"Accuracy: {accuracy}")
-    print(classification_report(y_test, y_pred, target_names=size_categories))
+    print(classification_report(y_test, 
+                                y_pred, 
+                                target_names = size_categories))
     
     # Save classification report to CSV
     pd.DataFrame(classification_rep).transpose().to_csv("classification_report.csv")
@@ -554,15 +608,21 @@ def store_predict_fire_size_and_find_terms(df, size_categories):
     negative_features = [(coef, feature) for coef, feature in feature_importance if coef < 0]
     
     # Save influential features to separate CSV files
-    pd.DataFrame(positive_features, columns=['Coefficient', 'Feature']).to_csv("positive_influential_features.csv", index=False)
-    pd.DataFrame(negative_features, columns=['Coefficient', 'Feature']).to_csv("negative_influential_features.csv", index=False)
+    pd.DataFrame(positive_features, columns=['Coefficient', 
+                                             'Feature']).to_csv("positive_influential_features.csv", 
+                                                                index=False)
+    pd.DataFrame(negative_features, columns=['Coefficient', 
+                                             'Feature']).to_csv("negative_influential_features.csv", 
+                                                                index=False)
 
     # Print the most influential terms for the first category in size_categories
     print(f"Most influential terms for '{size_categories[1]}' fires:")
-    print(pd.DataFrame(positive_features, columns=['Coefficient', 'Feature']).head(15))
+    print(pd.DataFrame(positive_features, columns=['Coefficient', 
+                                                   'Feature']).head(15))
     
     # Print the most influential terms for the second category in size_categories
     print(f"\nMost influential terms for '{size_categories[0]}' fires:")
-    print(pd.DataFrame(negative_features, columns=['Coefficient', 'Feature']).head(15))
+    print(pd.DataFrame(negative_features, columns=['Coefficient', '
+                                                   Feature']).head(15))
 
 
