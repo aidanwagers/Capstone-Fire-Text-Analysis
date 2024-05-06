@@ -4,20 +4,24 @@
 # In[1]:
 
 
-import nltk
-nltk.download('punkt')
-from nltk.corpus import stopwords
-import numpy as np
-import sqlite3
-from collections import Counter, defaultdict
-from string import punctuation
 import re
-import pandas as pd
-import matplotlib.pyplot as plt
-from pprint import pprint
-sw = stopwords.words('english')
-import janitor
+from collections import Counter, defaultdict
 from datetime import datetime
+from string import punctuation
+
+import janitor
+import matplotlib.pyplot as plt
+import nltk
+import numpy as np
+import pandas as pd
+import sqlite3
+from nltk.corpus import stopwords
+
+# Download necessary datasets from nltk
+nltk.download('punkt')
+
+# Stopwords for English
+sw = stopwords.words('english')
 
 
 # In[5]:
@@ -46,7 +50,8 @@ def oarr_clean_and_check(df):
     """
     
     # There is one erroneous entry in the geo_are_name column, so I fix it here.
-    df['geo_area_name'] = df['geo_area_name'].replace('1', 'Northwest')
+    df['geo_area_name'] = df['geo_area_name'].replace('1', 
+                                                      'Northwest')
     
     # Below I check to make sure all geo_area_names are properly filled and formatted.
     df['geo_area_name'] = df['geo_area_name'].astype(str)
@@ -55,21 +60,25 @@ def oarr_clean_and_check(df):
     na = df[df['geo_area_name'].str.contains(r'[^a-zA-Z\s]')]
     
     if not inc.empty:
-        print("The row(s) at below index(es) need attention. The region is likely incorrect")
+        print("The row(s) at below index(es) need attention. "
+              "The region is likely incorrect")
         for index, row in inc.iterrows():
             print(index)
     if not na.empty:
-        print("The row(s) at below index(es) need attention. The region is likely incorrect")
+        print("The row(s) at below index(es) need attention. "
+              "The region is likely incorrect")
         for index, row in na.iterrows():
             print(index)
     if not inc2.empty:
-        print("The row(s) at below index(es) need attention. The region is likely incorrect")
+        print("The row(s) at below index(es) need attention. "
+              "The region is likely incorrect")
         for index, row in na.iterrows():
             print(index)
             
     # Check to make sure each entry has a unique identifier.
     if df['wfdss_org_id'].nunique() != len(df['wfdss_org_id']):
-        print("At least one WFDSS_ORG_ID is not unique. This is worth investigating.")
+        print("At least one WFDSS_ORG_ID is not unique. "
+              "This is worth investigating.")
     
     # Here I check the fire_name column.
     fire_names = df['fire_name'].astype(str)
@@ -102,10 +111,13 @@ def oarr_clean_and_check(df):
         df['geographic_area'] = df['geographic_area'].astype(int)
 
     if (onecheck > 1).any():
-        print("One or more geo area number associates with more than 1 region. That's probably not right.")
+        print("One or more geo area number associates with more than 1 region. " 
+              "That's probably not right.")
     
     # Some date checking
-    df['start_date_time'] = df['start_date_time'].apply(lambda x: datetime.strptime(x, "%Y-%m-%d:%H%M"))
+    df['start_date_time'] = (df['start_date_time']
+                             .apply(lambda x: datetime.strptime(x,"%Y-%m-%d:%H%M"))
+                                                                                    
     
     for col, valid_range in [('start_date_time', None), ('start_year', range(2011, 2023)),
                          ('start_month', range(1, 13)), ('start_month_day_year', None)]:
