@@ -50,7 +50,13 @@ In this final section of the notebook I used acreage binned to quartiles to exam
 This is the jupyter notebook containing the final code for my capstone project. It is the synthesis of multiple other notebooks created during this project.
 
 ### agency_involvement_functions.py:
-This .py file contains all the functions I made to work on gaining insight into agency involvement in the data.
+This .py file contains all the functions I made to work on gaining insight into agency involvement in the data. It contains the following functions:
+* adress_agency_imbalance
+* analyze_agency_involvement
+* get_agency_stats
+* get_most_common_words
+* pretty_print_results
+* update_agency_stats_and_features
 
 ### oarr_cleaning.py:
 Contains two functions that are used for cleaning column names and checking data for errors.
