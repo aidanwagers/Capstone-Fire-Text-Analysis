@@ -7,70 +7,62 @@
 # In[1]:
 
 
-import nltk
-from datetime import timedelta
-import os
-nltk.download('punkt')
-from nltk.corpus import stopwords
-import numpy as np
-import sqlite3
-from collections import Counter, defaultdict
-from string import punctuation
-import re
-import pandas as pd
-import matplotlib.pyplot as plt
-from pprint import pprint
-sw = stopwords.words('english')
-import janitor
-import spacy
-from textblob import TextBlob
-tb = TextBlob('')
-from spacytextblob.spacytextblob import SpacyTextBlob
-nlp = spacy.load('en_core_web_lg')
-import seaborn as sns
-import scipy.stats as stats
-from scipy.stats import kruskal
-from gensim.models import CoherenceModel
-from gensim import corpora
-from gensim.models.ldamodel import LdaModel
-import ipywidgets as widgets
-from ipywidgets import Layout
-from ipywidgets import interact_manual, interactive_output
-from IPython.display import display, clear_output
-import pyLDAvis.gensim_models as gensimvis
-import pyLDAvis
-import spacy
 import math
-from textblob import TextBlob
-tb = TextBlob('')
-from spacytextblob.spacytextblob import SpacyTextBlob
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import BaggingClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.preprocessing import LabelEncoder
+import os
+import re
+import warnings
+from collections import Counter, defaultdict
+from datetime import timedelta
 from random import randint
-from sklearn.model_selection import RandomizedSearchCV
-import winsound
-from sklearn.model_selection import cross_val_score
-from sklearn.metrics import classification_report, confusion_matrix
+
+import eli5
+import gensim
+import ipywidgets as widgets
+import janitor
+import matplotlib.pyplot as plt
+import nltk
+import numpy as np
+import pandas as pd
+import pyLDAvis
+import pyLDAvis.gensim_models as gensimvis
+import scipy.stats as stats
+import seaborn as sns
+import spacy
+import sqlite3
+from gensim import corpora
+from gensim.models import CoherenceModel, LdaModel
+from IPython.display import display, clear_output
+from nltk.corpus import stopwords, words
+from nltk.probability import FreqDist
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import (GridSearchCV, RandomizedSearchCV, cross_val_score, train_test_split)
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
 from spellchecker import SpellChecker
 from textblob import TextBlob
-import eli5
 from eli5.sklearn import PermutationImportance
-import warnings
-from sklearn.model_selection import GridSearchCV
-from nltk.tokenize import word_tokenize
-from nltk.probability import FreqDist
-from nltk.corpus import words
-from nltk.util import ngrams
 
+# Download necessary datasets from nltk
+nltk.download('punkt')
+
+# Spacy and TextBlob setups
+nlp = spacy.load('en_core_web_lg')
+tb = TextBlob('')
+nlp.add_pipe('spacytextblob')
+
+# Ignore warnings
+warnings.filterwarnings('ignore')
+
+# Stopwords for English
+sw = stopwords.words('english')
 
 # In[2]:
 
@@ -89,7 +81,9 @@ def count_ngrams(text, n):
     tokens = word_tokenize(text)  
     n_grams = ngrams(tokens, n)
     n_gram_freq = Counter(n_grams)
-    sorted_n_grams = dict(sorted(n_gram_freq.items(), key=lambda item: item[1], reverse=True))
+    sorted_n_grams = dict(sorted(n_gram_freq.items(), 
+                                 key=lambda item: item[1], 
+                                 reverse=True))
      
     return sorted_n_grams
 
@@ -109,7 +103,8 @@ def completion_percentage(df, columns_to_process):
 
     for column in columns_to_process:
         total_count = len(df)
-        non_empty_count = df[column].apply(lambda x: x.strip() if isinstance(x, str) else x).replace('', pd.NA).notna().sum()
+        non_empty_count = df[column].apply(lambda x: x.strip() 
+                                           if isinstance(x, str) else x).replace('', pd.NA).notna().sum()
         
         if total_count > 0:
             perc_completion = non_empty_count / total_count * 100
@@ -202,9 +197,12 @@ def percentage_with_target_words(data, target_words):
     data_copy = data.copy()
 
     for word in target_words:
-        data_copy[f'contains_{word}'] = data_copy['combined_text'].apply(contains_target_word, target_word=word)
-        percentage_with_target_words[word] = (data_copy[f'contains_{word}'].sum() / len(data_copy)) * 100
-        data_copy.drop(columns=[f'contains_{word}'], inplace=True)
+        data_copy[f'contains_{word}'] = (data_copy['combined_text']
+                                         .apply(contains_target_word, target_word=word) 
+                                                
+        percentage_with_target_words[word] = (data_copy[f'contains_{word}'].sum() 
+                                              / len(data_copy)) * 100
+                                              data_copy.drop(columns=[f'contains_{word}'], inplace=True)
 
     sorted_results = sorted(percentage_with_target_words.items(), key=lambda x: x[1], reverse=True)
 
@@ -233,16 +231,20 @@ def percentage_by_risk(data, target_words):
     for risk, group in grouped_data:
         percentage_with_target_words = {}
         for word in target_words:
-            group[f'contains_{word}'] = group['combined_text'].apply(contains_target_word, target_word=word)
-            percentage_with_target_words[word] = (group[f'contains_{word}'].sum() / len(group)) * 100
-            group.drop(columns=[f'contains_{word}'], inplace=True)
+            group[f'contains_{word}'] = group['combined_text'].apply(contains_target_word, 
+                                                                     target_word=word)
+            percentage_with_target_words[word] = (group[f'contains_{word}'].sum() 
+                                                  / len(group)) * 100
+                                                  group.drop(columns=[f'contains_{word}'], inplace=True)
         results_by_risk[risk] = percentage_with_target_words
 
     for risk in custom_order:
         if risk in results_by_risk:
             percentages = results_by_risk[risk]
             print(f"Risk: {risk.capitalize()}")
-            for word, percentage in sorted(percentages.items(), key=lambda x: x[1], reverse=True):
+            for word, percentage in sorted(percentages.items(), 
+                                           key=lambda x: x[1], 
+                                           reverse=True):
                 print(f"The word '{word}' appears in {percentage:.2f}% of the texts for this risk.")
             print()
 
@@ -263,7 +265,8 @@ def extract_context(text, target_word, context_window_size = 5):
                           Each inner list contains the words in the context window.
     """
     words = text.split()
-    target_indices = [i for i, word in enumerate(words) if word.lower() == target_word]
+    target_indices = [i for i, 
+                      word in enumerate(words) if word.lower() == target_word]
     
     contexts = []
     for index in target_indices:
@@ -309,7 +312,10 @@ def vectorize_text_with_ngrams(text_data, labels, ngram_range=(1, 2), test_size=
       - y_test: Test labels.
     """
     # Split the data
-    x_train, x_test, y_train, y_test = train_test_split(text_data, labels, test_size=test_size, random_state= 2)
+    x_train, x_test, y_train, y_test = train_test_split(text_data, 
+                                                        labels, 
+                                                        test_size=test_size, 
+                                                        random_state= 2)
 
     # Vectorize using TF-IDF
     vectorizer = TfidfVectorizer(ngram_range=ngram_range)
@@ -366,10 +372,10 @@ def plot_function(word):
     plt.figure(figsize=(8, 6))
     
     # Ensure there is data for the given token in the dictionary
-    if 'default_risk' in context_words_dict_alpha.get(word, {}):  # Updated from cwd
-        common_words, counts = zip(*context_words_dict_alpha[word]['default_risk'])  # Updated from cwd
+    if 'default_risk' in context_words_dict_alpha.get(word, {}):  
+        common_words, counts = zip(*context_words_dict_alpha[word]['default_risk'])  
         plt.bar(common_words, counts)
-        plt.title(f"Common Tokens appearing in Context for '{word}'")  # Updated title
+        plt.title(f"Common Tokens appearing in Context for '{word}'")  
         plt.xlabel("Words")
         plt.ylabel("Count")
         plt.show()
@@ -378,10 +384,10 @@ def plot_function(word):
     plt.figure(figsize=(8, 6))
     
     # Ensure there is data for the given token in the dictionary
-    if 'default_risk' in context_words_dict_alpha.get(word, {}):  # Updated from cwd
-        common_words, counts = zip(*context_words_dict_alpha[word]['default_risk'])  # Updated from cwd
+    if 'default_risk' in context_words_dict_alpha.get(word, {}):
+        common_words, counts = zip(*context_words_dict_alpha[word]['default_risk']) 
         plt.bar(common_words, counts)
-        plt.title(f"Common Tokens appearing in Context for '{word}'")  # Updated title
+        plt.title(f"Common Tokens appearing in Context for '{word}'")  
         plt.xlabel("Words")
         plt.ylabel("Count")
         plt.show()
@@ -403,9 +409,13 @@ def plot_risks(word):
     # Ensure there is data for the given token in the dictionary
     if word in context_words_dict:
         # Sort risk descriptions based on counts
-        sorted_risks = sorted(context_words_dict[word].items(), key=lambda x: sum(count for word, count in x[1]), reverse=True)
+        sorted_risks = sorted(context_words_dict[word].items(), 
+                              key=lambda x: sum(count for word, 
+                                                count in x[1]), 
+                              reverse=True)
 
-        for ax, (risk_description, common_words) in zip(axes, sorted_risks):
+        for ax, (risk_description, common_words) in zip(axes, 
+                                                        sorted_risks):
             words, counts = zip(*common_words)
             ax.bar(words, counts)
             ax.set_title(risk_description)
