@@ -34,7 +34,7 @@ from IPython.display import clear_output, display
 from nltk.corpus import stopwords
 from scipy.stats import kruskal
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.metrics.pairwise import cosine_similarity
