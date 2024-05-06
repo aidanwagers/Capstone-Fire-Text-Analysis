@@ -4,86 +4,54 @@
 # In[1]:
 
 
-import nltk
-from datetime import timedelta
-import os
-from nltk.corpus import stopwords
-import numpy as np
-import sqlite3
-from collections import Counter, defaultdict
-from string import punctuation
-import re
-import pandas as pd
-import matplotlib.pyplot as plt
-from pprint import pprint
-sw = stopwords.words('english')
-import janitor
-import spacy
-from textblob import TextBlob
-tb = TextBlob('')
-from spacytextblob.spacytextblob import SpacyTextBlob
-nlp = spacy.load('en_core_web_lg')
-import seaborn as sns
-import scipy.stats as stats
-from scipy.stats import kruskal
-from gensim.models import CoherenceModel
-from gensim import corpora
-from gensim.models.ldamodel import LdaModel
-import ipywidgets as widgets
-from ipywidgets import Layout
-from ipywidgets import interact_manual, interactive_output
-from IPython.display import display, clear_output
-import pyLDAvis.gensim_models as gensimvis
-import pyLDAvis
-import spacy
+# Import standard libraries
 import math
-from textblob import TextBlob
-tb = TextBlob('')
-from spacytextblob.spacytextblob import SpacyTextBlob
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import BaggingClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.preprocessing import LabelEncoder
+import os
+import re
+from collections import Counter, defaultdict
+from datetime import timedelta
 from random import randint
-from sklearn.model_selection import RandomizedSearchCV
-import winsound
-from sklearn.model_selection import cross_val_score
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.linear_model import LogisticRegression
-from spellchecker import SpellChecker
-from textblob import TextBlob
+from string import punctuation
+
+# Import third-party libraries
 import eli5
-from eli5.sklearn import PermutationImportance
-import warnings
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    nltk.download('punkt')
-    nltk.download('words')
-from sklearn.model_selection import GridSearchCV
-from nltk.tokenize import word_tokenize
-from nltk.probability import FreqDist
-from nltk.corpus import words
-from nltk.util import ngrams
-import random
-from wordcloud import WordCloud
-import pprint
-import xgboost as xgb
-import matplotlib.dates as mdates
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import precision_score, recall_score, f1_score
-tfidf_vectorizer = TfidfVectorizer()
-from imblearn.over_sampling import RandomOverSampler
-import csv
-from sklearn.metrics import classification_report, confusion_matrix, precision_recall_fscore_support
-from imblearn.over_sampling import RandomOverSampler
+import ipywidgets as widgets
+import janitor
+import matplotlib.pyplot as plt
+import nltk
+import numpy as np
+import pandas as pd
+import pyLDAvis
+import pyLDAvis.gensim_models as gensimvis
+import scipy.stats as stats
+import seaborn as sns
+import spacy
+import sqlite3
+import winsound
+from gensim import corpora
+from gensim.models import CoherenceModel, LdaModel
+from IPython.display import clear_output, display
+from nltk.corpus import stopwords
+from scipy.stats import kruskal
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.model_selection import RandomizedSearchCV, cross_val_score, train_test_split
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
+from spellchecker import SpellChecker
+from spacytextblob.spacytextblob import SpacyTextBlob
+from textblob import TextBlob
+
+# Setup nltk
+sw = stopwords.words('english')
+nlp = spacy.load('en_core_web_lg')
+tb = TextBlob('')
 # In[2]:
 
 
@@ -160,13 +128,18 @@ def analyze_agency_involvement(data, agency_list):
         # Relative frequency analysis
         total_words_present = sum(freq for _, freq in common_words_present)
         total_words_absent = sum(freq for _, freq in common_words_absent)
-        relative_freq_present = {word: freq / total_words_present for word, freq in common_words_present}
-        relative_freq_absent = {word: freq / total_words_absent for word, freq in common_words_absent}
+        relative_freq_present = {word: freq / total_words_present for word, 
+                                 freq in common_words_present}
+        relative_freq_absent = {word: freq / total_words_absent for word, 
+                                freq in common_words_absent}
         
         # Comparative frequency
-        comparative_freq = {word: relative_freq_present.get(word, 0) - relative_freq_absent.get(word, 0)\
+        comparative_freq = {word: relative_freq_present.get(word, 0)\
+                            - relative_freq_absent.get(word, 0)\
                             for word in set(relative_freq_present) | set(relative_freq_absent)}
-        sorted_comparative_freq = sorted(comparative_freq.items(), key=lambda x: abs(x[1]), reverse=True)
+        sorted_comparative_freq = sorted(comparative_freq.items(), 
+                                         key=lambda x: abs(x[1]), 
+                                         reverse=True)
         
         agency_data['text_analysis'] = {
             'common_words_present': common_words_present,
@@ -180,7 +153,10 @@ def analyze_agency_involvement(data, agency_list):
         X = tfidf_vectorizer.fit_transform(data['combined_text'].fillna(''))
         y = data[agency]
         
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                            y, 
+                                                            test_size=0.2, 
+                                                            random_state=42)
         lr_model = LogisticRegression(max_iter=1000)
         lr_model.fit(X_train, y_train)
         
@@ -197,8 +173,10 @@ def analyze_agency_involvement(data, agency_list):
         # Feature importance
         feature_names = tfidf_vectorizer.get_feature_names_out()
         coefficients = lr_model.coef_[0]
-        features_df = pd.DataFrame({'Feature': feature_names, 'Coefficient': coefficients})
-        features_sorted = features_df.sort_values(by='Coefficient', ascending=False)
+        features_df = pd.DataFrame({'Feature': feature_names, 
+                                    'Coefficient': coefficients})
+        features_sorted = features_df.sort_values(by='Coefficient', 
+                                                  ascending=False)
         
         agency_data['feature_importance'] = {
             'positive': features_sorted.head(10).to_dict('records'),
@@ -297,7 +275,8 @@ def pretty_print_results(results):
     print(f"{'Metric':<25} | {'Value'}")
     print("-" * 50)
     
-    # Loop through each result, print formatted string for numbers and use pprint for complex types
+    # Loop through each result, print formatted string for numbers 
+    # and use pprint for complex types
     for key, value in results.items():
         if isinstance(value.iloc[0], (float, int)):
             # Format numbers to two decimal places if it's a float/int
@@ -321,7 +300,10 @@ def adress_agency_imbalance(agency, df):
     """
     
     # Initialize a vectorizer
-    vectorizer = TfidfVectorizer(min_df=5, max_df=0.9, ngram_range=(1, 2), stop_words='english')
+    vectorizer = TfidfVectorizer(min_df=5, 
+                                 max_df=0.9, 
+                                 ngram_range=(1, 2), 
+                                 stop_words='english')
     
     # Prepare the feature matrix and the target vector
     X = vectorizer.fit_transform(df['combined_text'].fillna(''))
@@ -332,10 +314,14 @@ def adress_agency_imbalance(agency, df):
     X_resampled, y_resampled = oversampler.fit_resample(X, y)
     
     # Splitting the resampled data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, 
+                                                        y_resampled, 
+                                                        test_size=0.2, 
+                                                        random_state=2)
     
     # Model training with hyperparameter tuning (if needed)
-    lr_model = LogisticRegression(max_iter=1000, class_weight='balanced')
+    lr_model = LogisticRegression(max_iter=1000, 
+                                  class_weight='balanced')
     lr_model.fit(X_train, y_train)
     
     # Predictions
@@ -346,7 +332,11 @@ def adress_agency_imbalance(agency, df):
     print(report)
     
     # Cross-validation for model evaluation
-    cv_scores = cross_val_score(lr_model, X_resampled, y_resampled, cv=5, scoring='accuracy')  # Change scoring as needed
+    cv_scores = cross_val_score(lr_model, 
+                                X_resampled, 
+                                y_resampled, 
+                                cv=5, 
+                                scoring='accuracy')  # Change scoring as needed
     print("Cross-validated scores:", cv_scores)
     print("Mean accuracy:", cv_scores.mean())
     
@@ -356,8 +346,11 @@ def adress_agency_imbalance(agency, df):
     feature_coefficients = dict(zip(feature_names, coefficients))
     
     # Sorting feature coefficients for positive and negative classes
-    sorted_positive_coefficients = sorted(feature_coefficients.items(), key=lambda x: x[1], reverse=True)[:12]
-    sorted_negative_coefficients = sorted(feature_coefficients.items(), key=lambda x: x[1])[:12]
+    sorted_positive_coefficients = sorted(feature_coefficients.items(), 
+                                          key=lambda x: x[1], 
+                                          reverse=True)[:12]
+    sorted_negative_coefficients = sorted(feature_coefficients.items(),
+                                          key=lambda x: x[1])[:12]
     
     # Printing sorted coefficients
     print("\nSorted positive class feature coefficients:")
@@ -370,7 +363,9 @@ def adress_agency_imbalance(agency, df):
         
         
 # In[ ]:
-def update_agency_stats_and_features(agency, df, stats_file='agency_stats.csv', features_file='agency_features.csv'):
+def update_agency_stats_and_features(agency, df, 
+                                     stats_file='agency_stats.csv', 
+                                     features_file='agency_features.csv'):
     """
     Update statistics and feature coefficients for a specific agency and save them to or create CSV files.
 
@@ -384,24 +379,37 @@ def update_agency_stats_and_features(agency, df, stats_file='agency_stats.csv', 
     None
     """
     
-    vectorizer = TfidfVectorizer(min_df=5, max_df=0.9, ngram_range=(1,1), stop_words='english')
+    vectorizer = TfidfVectorizer(min_df=5, 
+                                 max_df=0.9, 
+                                 ngram_range=(1,1), 
+                                 stop_words='english')
     X = vectorizer.fit_transform(df['combined_text'].fillna(''))
     y = df[agency]
     oversampler = RandomOverSampler(random_state=42)
     X_resampled, y_resampled = oversampler.fit_resample(X, y)
-    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled,
+                                                        y_resampled,
+                                                        test_size=0.2, 
+                                                        random_state=2)
     
     lr_model = LogisticRegression(max_iter=1000, class_weight='balanced')
     lr_model.fit(X_train, y_train)
     y_pred = lr_model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
-    precision, recall, f1_score, _ = precision_recall_fscore_support(y_test, y_pred, average='weighted')
+    precision, recall, f1_score, _ = precision_recall_fscore_support(y_test, 
+                                                                     y_pred, 
+                                                                     average='weighted')
     
     # Load or create the statistics DataFrame
     try:
         stats_df = pd.read_csv(stats_file)
     except FileNotFoundError:
-        stats_df = pd.DataFrame(columns=['Agency', 'Accuracy', 'Precision', 'Recall', 'F1 Score', 'Run Date'])
+        stats_df = pd.DataFrame(columns=['Agency', 
+                                         'Accuracy', 
+                                         'Precision', 
+                                         'Recall', 
+                                         'F1 Score', 
+                                         'Run Date'])
     
     new_stats = pd.DataFrame([{
         'Agency': agency,
@@ -427,10 +435,14 @@ def update_agency_stats_and_features(agency, df, stats_file='agency_stats.csv', 
     try:
         features_df = pd.read_csv(features_file)
     except FileNotFoundError:
-        features_df = pd.DataFrame(columns=['Agency', 'Feature', 'Coefficient'])
+        features_df = pd.DataFrame(columns=['Agency', 
+                                            'Feature', 
+                                            'Coefficient'])
     
-    features_df = pd.concat([features_df, feature_data], ignore_index=True)
-    features_df.to_csv(features_file, index=False)
+    features_df = pd.concat([features_df, feature_data], 
+                            ignore_index=True)
+    features_df.to_csv(features_file, 
+                       index=False)
     
     print(f"Updated statistics for {agency} saved to {stats_file}.")
     print(f"Feature coefficients for {agency} saved to {features_file}.")
