@@ -120,7 +120,7 @@ def oarr_clean_and_check(df):
                                                                                     
     
     for col, valid_range in [('start_date_time', None), ('start_year', range(2011, 2023)),
-                         ('start_month', range(1, 13)), ('start_month_day_year', None)]:
+                             ('start_month', range(1, 13)), ('start_month_day_year', None)]:
         for idx, value in enumerate(df[col], start=1):
             if pd.isnull(value):
                 if col == 'start_month_day_year':
