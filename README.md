@@ -59,16 +59,48 @@ This .py file contains all the functions I made to work on gaining insight into 
 * update_agency_stats_and_features
 
 ### oarr_cleaning.py:
-Contains two functions that are used for cleaning column names and checking data for errors.
+Contains two functions that are used for cleaning column names and checking data for errors. It contains the following functions:
+* cl_names
+* oarr_clean_and_check 
 
 ### text_analysis_functions_wagers.py:
-Contains all text analysis functions unrelated to classification of text.
+Contains all text analysis functions unrelated to classification of text. It contains the following functions:
+* analyze_sentiment
+* average_tfidf_vectors
+* basic_text
+* button_click_handler
+* completion_percentage
+* contains_target_word
+* count_ngrams
+* extract_context
+* extract_ordered_ngrams
+* percentage_by_risk
+* percentage_with_target_words
+* plot_function
+* vectorize_text_with_ngrams
 
 ### text_classification_functions.py:
-Contains all functions related to classification of text.
+Contains all functions related to classification of text. These include:
+* best_random_forest
+* neighbor_number_search
+* predict_fire_size_and_find_terms
+* risk_other_machine
+* store_coefficients
+* store_predict_fire_size_and_find_terms
+* train_knn_classifier
+* train_logistic_reg
+* train_logistic_reg_for_one_risk
+* train_nb_classifier
+* train_random_forest
+* try_variety_of_models
 
 ### text_functions.py:
-This file contains functions used in processing the text to prepare it for anlysis.
+This file contains functions used in processing the text to prepare it for anlysis. They are as follows:
+* categorize_columns
+* firestops
+* get_last_value
+* process_text_column
+* set_columns_to_string
 
 ### three_ps:
 This is a weekly update file to track my progress throughout the project lifecycle.
