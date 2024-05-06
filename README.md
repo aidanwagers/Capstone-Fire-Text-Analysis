@@ -46,13 +46,28 @@ In this final section of the notebook I used acreage binned to quartiles to exam
 
 
 ## What are these files?
-## Product Notebook:
-This is the jupyter notebook containing the final code for my capstone project.
+### Product Notebook.ipynb:
+This is the jupyter notebook containing the final code for my capstone project. It is the synthesis of multiple other notebooks created during this project.
 
-## three_ps:
+### agency_involvement_functions.py:
+This .py file contains all the functions I made to work on gaining insight into agency involvement in the data.
+
+### oarr_cleaning.py:
+Contains two functions that are used for cleaning column names and checking data for errors.
+
+### text_analysis_functions_wagers.py:
+Contains all text analysis functions unrelated to classification of text.
+
+### text_classification_functions.py:
+Contains all functions related to classification of text.
+
+### text_functions.py:
+This file contains functions used in processing the text to prepare it for anlysis.
+
+### three_ps:
 This is a weekly update file to track my progress throughout the project lifecycle.
 
-## README.md:
+### README.md:
 The file you are reading now!
 
 
