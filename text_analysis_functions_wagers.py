@@ -56,7 +56,7 @@ nltk.download('punkt')
 # Spacy and TextBlob setups
 nlp = spacy.load('en_core_web_lg')
 tb = TextBlob('')
-nlp.add_pipe('spacytextblob')
+
 
 # Ignore warnings
 warnings.filterwarnings('ignore')

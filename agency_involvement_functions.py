@@ -4,19 +4,26 @@
 # In[1]:
 
 
-# Import standard libraries
+# Import standard libraries.
+import csv
 import math
 import os
+import random
 import re
-from collections import Counter, defaultdict
+import warnings
+from collections import (Counter, 
+                         defaultdict)
 from datetime import timedelta
+import pprint
 from random import randint
 from string import punctuation
 
-# Import third-party libraries
+# Third-party library imports
 import eli5
+import importlib
 import ipywidgets as widgets
 import janitor
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import nltk
 import numpy as np
@@ -27,26 +34,50 @@ import scipy.stats as stats
 import seaborn as sns
 import spacy
 import sqlite3
-import winsound
+import xgboost as xgb
 from gensim import corpora
-from gensim.models import CoherenceModel, LdaModel
-from IPython.display import clear_output, display
-from nltk.corpus import stopwords
-from scipy.stats import kruskal
-from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from gensim.models import CoherenceModel
+from gensim.models.ldamodel import LdaModel
+from imblearn.over_sampling import RandomOverSampler
+from IPython.display import (display,
+                             clear_output)
+from nltk.corpus import (stopwords,
+                         words)
+from nltk.probability import FreqDist
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+from scipy.sparse import hstack
+from scipy.stats import (kruskal,
+                         pearsonr)
+from sklearn.decomposition import PCA
+from sklearn.ensemble import (BaggingClassifier,
+                              RandomForestClassifier,
+                              StackingClassifier)
+from sklearn.feature_extraction.text import (CountVectorizer,
+                                             TfidfVectorizer)
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import (accuracy_score,
+                             classification_report,
+                             confusion_matrix,
+                             f1_score,
+                             precision_recall_fscore_support,
+                             precision_score,
+                             recall_score)
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.model_selection import RandomizedSearchCV, cross_val_score, train_test_split
+from sklearn.model_selection import (cross_val_score,
+                                     GridSearchCV,
+                                     RandomizedSearchCV, 
+                                     train_test_split)
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import (LabelEncoder,
+                                   StandardScaler)
 from sklearn.svm import SVC
 from spellchecker import SpellChecker
-from spacytextblob.spacytextblob import SpacyTextBlob
 from textblob import TextBlob
+from wordcloud import WordCloud
+
 
 # Setup nltk
 sw = stopwords.words('english')
@@ -54,6 +85,7 @@ nlp = spacy.load('en_core_web_lg')
 tb = TextBlob('')
 # In[2]:
 
+tfidf_vectorizer = TfidfVectorizer()
 
 def get_most_common_words(texts, n_top=10):
     """

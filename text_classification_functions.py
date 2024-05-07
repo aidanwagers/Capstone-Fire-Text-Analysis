@@ -63,7 +63,7 @@ nltk.download('words')
 # NLP setup
 nlp = spacy.load('en_core_web_lg')
 tb = TextBlob('')
-nlp.add_pipe('spacytextblob')
+
 
 # Stopwords for English
 sw = stopwords.words('english')
